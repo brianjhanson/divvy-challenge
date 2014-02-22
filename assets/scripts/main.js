@@ -39,12 +39,13 @@ var setScale = function(dataset) {
                .domain([minCap, maxCap])
                .range([0,10]);
 
-  console.log(capScale);
   return capScale;
 };
 
 function redraw() {
-    svg.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
+    svg.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")")
+      .selectAll("path")
+      .style({"stroke-width" : (1/d3.event.scale)});
 }
 
 var parseNeighborhoods = function() {
@@ -60,7 +61,7 @@ var drawNeighborhoods = function(d) {
     .enter()
     .append("path")
     .attr("d", path)
-    .style({"fill": "rgba(129, 249, 140, 0.4)", "stroke" : "white", "stroke-width": 1});
+    .style({"fill": "#444a4a", "stroke" : "#242626", "stroke-width": 1});
 };
 
 var drawStations = function(d) {
@@ -77,7 +78,7 @@ var drawStations = function(d) {
       .attr("r", function(d) {
         return capScale(d.cap);
       })
-      .style("fill", "rgba(0,0,0,0.4)")
+      .style("fill", "#3db7e4")
       .style("opacity", 0.75);
 };
 
@@ -90,14 +91,13 @@ var parseStations = function() {
       cap: +d.dpcapacity
     };
   }, function(error, data){
-    console.log(data);
     setScale(data);
     drawStations(data);
   });
 
 };
 
-var parseData = function() {
+var parseTrips = function() {
   d3.csv(dataPath, function(d) {
     return {
       tripID: +d.trip_id,
@@ -114,8 +114,6 @@ var parseData = function() {
       userBirthYear: new Date(d.birthyear)
     };
   }, function(error, rows) {
-      // logRows(rows);
-      chartBars(rows);
   });
 };
 
@@ -144,6 +142,6 @@ var chartBars = function(dataset) {
 };
 
 // Call the function
-parseData();
+parseTrips();
 parseNeighborhoods();
 

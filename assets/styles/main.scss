@@ -1,2 +1,28 @@
 @import "partials/normalize";
+@import "partials/bebas";
 
+body {
+	background-color: #242626;
+}
+
+.page-title {
+	font-family: 'bebas neue', sans-serif;
+	font-size: 3rem;
+	text-align: center;
+	color: #fff;
+	margin: 0;
+}
+
+header[role="banner"] {
+	background-color: rgba(0,0,0,0.2);
+	padding: 1em 0;
+}
+
+#results {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	z-index: -1;
+}
