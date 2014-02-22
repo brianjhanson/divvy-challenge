@@ -1,10 +1,27 @@
-var w = 1200;
-var h = 1200;
+// var w = 1200;
+// var h = 1200;
 var barPadding = 1;
 var rows;
-var maxCap;
-var minCap;
+var maxCap,
+    minCap;
+var maxDuration,
+    minDuration;
 var capScale;
+
+var win = window,
+    doc = document,
+    docEl = doc.documentElement,
+    body = doc.getElementsByTagName('body')[0],
+    w = win.innerWidth || docEl.clientWidth || body.clientWidth,
+    h = win.innerHeight|| docEl.clientHeight|| body.clientHeight;
+
+// function updateWindow(){
+//     w = win.innerWidth || docEl.clientWidth || body.clientWidth,
+//     h = w.innerHeight|| e.clientHeight|| g.clientHeight;
+
+//     svg.attr("width", x).attr("height", y);
+// }
+// window.onresize = updateWindow;
 
 var dataPath = "assets/data/trips_med.csv";
 var dataNeighborhoods = "assets/data/neighborhoods.json";
@@ -41,6 +58,21 @@ var setScale = function(dataset) {
 
   return capScale;
 };
+
+var setDurationScale = function(dataset) {
+  maxDuration = d3.max(dataset, function(d) {
+    return d.tripDuration;
+  });
+
+  minDuration = d3.min(dataset, function(d) {
+    return d.tripDuration;
+  });
+
+  durationScale = d3.scale
+                    .linear()
+                    .domain([minDuration, maxDuration])
+                    .range([0, 100]);
+}
 
 function redraw() {
     svg.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")")
@@ -113,9 +145,69 @@ var parseTrips = function() {
       userGender: d.gender,
       userBirthYear: new Date(d.birthyear)
     };
-  }, function(error, rows) {
+  }, function(error, d) {
+
+    setDurationScale(d);
+    outputTrips(d);
+
   });
 };
+
+var outputTrips = function(data) {
+
+    var tripsList = d3.select("#trips");
+
+    var trips = tripsList.selectAll("li")
+      .data(data)
+      .enter()
+      .append("li")
+      .attr("class", "trip-list__trip trip")
+      .style({
+        "background-image": function(d) {
+          var gradient = durationScale(d.tripDuration) * 10;
+
+          return "linear-gradient(to right,#3DB7E4 " + gradient +"% ,#303333 "+(gradient+.001)+"%)"
+        }
+      });
+
+    var tripStart = trips.append("div")
+      .attr("class", "trip__start");
+
+    var tripEnd = trips.append("div")
+      .attr("class", "trip__end");
+
+
+    tripStart.append("div")
+          .attr("class", "trip__start-time")
+          .append("text")
+          .text(function(d) {
+            return d.tripStart;
+          });
+
+    tripStart.append("div")
+          .attr("class", "trip__start-station")
+          .append("text")
+          .text(function(d) {
+            return d.stationFromName;
+          });
+
+
+    tripEnd.append("div")
+          .attr("class", "trip__end-time")
+          .append("text")
+          .text(function(d) {
+            return d.tripStop;
+          });
+
+    tripEnd.append("div")
+          .attr("class", "trip__end-station")
+          .append("text")
+          .text(function(d) {
+            return d.stationToName;
+          });
+}
+
+//
 
 var logData = function(data) {
   data.forEach(function(d){

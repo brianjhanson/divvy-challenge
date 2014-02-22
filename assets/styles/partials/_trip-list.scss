@@ -1,0 +1,16 @@
+.trip-list {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+	.trip-list__trip {
+		background-color: lighten(#242626, 5);
+		// background-image: linear-gradient(to right, $divvy-brand 20%, lighten(#242626, 5) 20.001%);
+		width: 100%;
+		font-size: 2rem;
+		padding: 1rem 5%;
+		color: #242626;
+		margin-bottom: .25rem;
+		@extend .cf;
+	}

@@ -1,0 +1,36 @@
+.trip__start-station {
+
+}
+
+	.trip__start,
+	.trip__end {
+		width: 50%;
+		float: left;
+	}
+
+	.trip__end {
+		text-align: right;
+	}
+
+	.trip__from, .trip__to {
+		font-size: 1rem;
+		float: left;
+		width: 50%;
+	}
+
+	.trip__to {
+		text-align: right;
+	}
+
+	.trip__start-time,
+	.trip__end-time {
+		font-size: 1.25rem;
+	}
+
+
+
+	.trips-titles {
+		@extend .cf;
+		padding: .5rem 5%;
+		background-color: rgba(0,0,0,0.9);
+	}
