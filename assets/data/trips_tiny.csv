@@ -1,0 +1,13 @@
+trip_id,starttime,stoptime,bikeid,tripduration,from_station_id,from_station_name,to_station_id,to_station_name,usertype,gender,birthyear
+4118,6/27/2013 12:11,6/27/2013 12:16,480,316,42,Michigan Ave & Oak St,282,Larrabee St & Menomonee St,Customer,,
+4275,6/27/2013 14:44,6/27/2013 14:45,77,64,76,Racine Ave & Congress Pkwy,76,Racine Ave & Congress Pkwy,Customer,,
+4291,6/27/2013 14:58,6/27/2013 15:05,77,433,76,Racine Ave & Congress Pkwy,139,Loomis St & Taylor St,Customer,,
+4316,6/27/2013 15:06,6/27/2013 15:09,77,123,139,Loomis St & Taylor St,139,Loomis St & Taylor St,Customer,,
+4342,6/27/2013 15:13,6/27/2013 15:27,77,852,139,Loomis St & Taylor St,166,Halsted St & James M Rochford St,Customer,,
+4480,6/27/2013 19:40,6/27/2013 22:28,27,"10,105",209,Clark St & Wrightwood Ave,46,Wells St & Walton St,Customer,,
+4490,6/27/2013 18:45,6/27/2013 19:03,418,"1,094",20,Dearborn St & Adams St,300,Lake Shore Dr & Monroe St,Customer,,
+4592,6/27/2013 19:34,6/27/2013 19:51,170,"1,020",8,Millennium Park,138,Canal St & Jackson Blvd,Customer,,
+4602,6/27/2013 19:45,6/27/2013 20:42,353,"3,419",20,Dearborn St & Adams St,20,Dearborn St & Adams St,Customer,,
+4607,6/27/2013 19:46,6/27/2013 19:57,369,653,5,Clark St & Randolph St,209,Clark St & Wrightwood Ave,Customer,,
+4617,6/27/2013 19:50,6/27/2013 20:19,658,"1,738",2,State St & Randolph St,2,State St & Randolph St,Customer,,
+4619,6/27/2013 19:52,6/27/2013 20:50,533,"3,482",262,Fairbanks Ct & Grand Ave,262,Fairbanks Ct & Grand Ave,Customer,,
