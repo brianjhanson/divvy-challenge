@@ -1,12 +1,31 @@
 @import "partials/normalize";
+@import "settings";
+
+
 @import "partials/bebas";
+@import "partials/helpers";
+@import "partials/trip-list";
+@import "partials/trip";
+
+$background-color: #242626;
+$divvy-brand: #3db7e4;
 
 body {
-	background-color: #242626;
+	background-color: $background-color;
+	color: #dfe1e1;
+	font-family: 'Titillium Web', sans-serif;
+	font-weight: 400;
+}
+
+a {
+	text-decoration: none;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	font-weight: 300;
 }
 
 .page-title {
-	font-family: 'bebas neue', sans-serif;
 	font-size: 3rem;
 	text-align: center;
 	color: #fff;
@@ -15,8 +34,27 @@ body {
 
 header[role="banner"] {
 	background-color: rgba(0,0,0,0.2);
-	padding: 1em 0;
+	padding: 1em 0 0 0;
+	font-family: 'Titillium Web', sans-serif;
+	font-weight: 200;
+	text-transform: uppercase;
 }
+
+.primary-nav {
+	text-align: center;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	> li {
+		display: inline-block;
+		> a {
+			color: #fff;
+			display: block;
+			padding: .25em 1em;
+		}
+	}
+}
+
 
 #results {
 	position: absolute;
