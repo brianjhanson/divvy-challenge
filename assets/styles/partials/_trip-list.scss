@@ -5,8 +5,10 @@
 }
 
 	.trip-list__trip {
-		background-color: lighten(#242626, 5);
-		// background-image: linear-gradient(to right, $divvy-brand 20%, lighten(#242626, 5) 20.001%);
+		background-image: linear-gradient(to right, #3DB7E4 50%, #303333 50.001%);
+	  background-size: 200% 100%;
+	  background-position: 100%;
+	  background-repeat: no-repeat;
 		width: 100%;
 		font-size: 2rem;
 		padding: 1rem 5%;
