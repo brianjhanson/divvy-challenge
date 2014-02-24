@@ -228,7 +228,13 @@ var outputTrips = function(data) {
         return delay / 1000;
 
       }) // data start - trip start time in ms
-      .style({"background-position" : "0%" });
+      .style({"background-position" : "0%" })
+      .each("end", function() {
+        d3.select(this).transition().duration(1000).delay(1000)
+        .style({"opacity": "0"})
+        .remove();
+      })
+
 
 
 
