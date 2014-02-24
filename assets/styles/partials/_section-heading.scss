@@ -1,0 +1,26 @@
+	.section-heading {
+		@extend .cf;
+		padding: .5rem 5%;
+		background-color: rgba(0,0,0,0.9);
+		font-size: 1rem;
+	}
+
+	.section-heading__left,
+	.section-heading__center,
+	.section-heading__right {
+		width: percentage(1/3);
+	}
+
+	.section-heading__left,
+	.section-heading__center {
+		float: left;
+	}
+
+	.section-heading__center {
+		text-align: center;
+	}
+
+	.section-heading__right {
+		float: right;
+		text-align: right;
+	}

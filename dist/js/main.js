@@ -1,19 +1,24 @@
 // var w = 1200;
 // var h = 1200;
-var barPadding = 1;
-var rows;
-var maxCap,
-    minCap;
-var maxDuration,
-    minDuration;
-var capScale;
-
-var win = window,
+var barPadding = 1,
+    rows,
+    maxCap,
+    minCap,
+    maxDuration,
+    minDuration,
+    capScale,
+    currentDate,
+    dateArray = [],
+    win = window,
     doc = document,
     docEl = doc.documentElement,
     body = doc.getElementsByTagName('body')[0],
     w = win.innerWidth || docEl.clientWidth || body.clientWidth,
-    h = win.innerHeight|| docEl.clientHeight|| body.clientHeight;
+    h = win.innerHeight|| docEl.clientHeight|| body.clientHeight,
+    dataPath = "assets/data/trips_med.csv",
+    dataNeighborhoods = "assets/data/neighborhoods.json",
+    dataDivvyStations = "assets/data/stations.csv",
+    speed = 500;
 
 // function updateWindow(){
 //     w = win.innerWidth || docEl.clientWidth || body.clientWidth,
@@ -22,10 +27,6 @@ var win = window,
 //     svg.attr("width", x).attr("height", y);
 // }
 // window.onresize = updateWindow;
-
-var dataPath = "assets/data/trips_med.csv";
-var dataNeighborhoods = "assets/data/neighborhoods.json";
-var dataDivvyStations = "assets/data/stations.csv";
 
 var projection = d3.geo.albers()
                         .scale(200000)
@@ -72,7 +73,7 @@ var setDurationScale = function(dataset) {
                     .linear()
                     .domain([minDuration, maxDuration])
                     .range([0, 100]);
-}
+};
 
 function redraw() {
     svg.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")")
@@ -129,29 +130,75 @@ var parseStations = function() {
 
 };
 
+var cleanDates = function(date) {
+
+  var weekDayName = ["Sun.","Mon.","Tue.","Wed.","Thu.","Fri.","Sat."];
+  var monthName = ["Jan.","Feb.","Mar.","Apr.","May","Jun.","Jul.","Aug.","Sep.","Oct.","Nov.","Dec."];
+  var period = "AM",
+      hour = date.getHours(),
+      minutes = date.getMinutes();
+
+  if(hour == 12) {
+    period = "PM";
+  } else if(hour > 12) {
+    hour = hour-12;
+    period = "PM";
+  }
+
+  if(minutes < 10) {
+    minutes = "0"+date.getMinutes();
+  }
+
+  return {
+    date: monthName[date.getMonth()] + " " + date.getDate() + " " + date.getFullYear(),
+    day: weekDayName[date.getDay()],
+    hour: hour + ":" + minutes + " " + period
+  };
+};
+
 var parseTrips = function() {
   d3.csv(dataPath, function(d) {
+    var startDateRaw = new Date(d.starttime),
+        endDateRaw = new Date(d.stoptime);
+
+    var startDate = cleanDates(startDateRaw);
+    var endDate = cleanDates(endDateRaw);
+
     return {
       tripID: +d.trip_id,
-      tripStart: new Date(d.starttime),
-      tripStop: new Date(d.stoptime),
+
+      tripStartRaw: new Date(d.starttime),
+      tripStartDate: startDate.date, // Ex: Feb. 12, 2014
+      tripStartDay: startDate.day, // Ex: Thu.
+      tripStartTime: startDate.hour,// Ex: 12:00p
+
+      tripStopRaw: new Date(d.stoptime),
+      tripStopDate: endDate.date,
+      tripStopDay: endDate.day,
+      tripStopTime: endDate.hour,
+
       tripDuration: +d.tripduration.replace(/[^\d\.\-\ ]/g, ""),
+
       bikeID: +d.bikeid,
+
       stationFromID: +d.from_station_id,
       stationFromName: d.from_station_name,
       stationToID: +d.to_station_id,
       stationToName: d.to_station_name,
+
       userType: d.usertype,
       userGender: d.gender,
       userBirthYear: new Date(d.birthyear)
     };
   }, function(error, d) {
-
+    logData(d);
     setDurationScale(d);
     outputTrips(d);
 
   });
 };
+
+
 
 var outputTrips = function(data) {
 
@@ -162,13 +209,6 @@ var outputTrips = function(data) {
       .enter()
       .append("li")
       .attr("class", "trip-list__trip trip")
-      .style({
-        "background-image": function(d) {
-          var gradient = durationScale(d.tripDuration) * 10;
-
-          return "linear-gradient(to right,#3DB7E4 " + gradient +"% ,#303333 "+(gradient+.001)+"%)"
-        }
-      });
 
     var tripStart = trips.append("div")
       .attr("class", "trip__start");
@@ -176,12 +216,33 @@ var outputTrips = function(data) {
     var tripEnd = trips.append("div")
       .attr("class", "trip__end");
 
+    trips.style({
+        "background-position": "100%"
+      })
+      .transition()
+      .duration(function(d){ return d.tripDuration * 10 })
+      .delay(function(d) {
+        dataStart = new Date("6/27/2013 12:11").getTime();
+        delay = d.tripStartRaw.getTime() - dataStart;
+
+        return delay / 1000;
+
+      }) // data start - trip start time in ms
+      .style({"background-position" : "0%" })
+      .each("end", function() {
+        d3.select(this).transition().duration(1000).delay(1000)
+        .style({"opacity": "0"})
+        .remove();
+      })
+
+
+
 
     tripStart.append("div")
           .attr("class", "trip__start-time")
           .append("text")
           .text(function(d) {
-            return d.tripStart;
+            return d.tripStartDay + " " + d.tripStartDate + " " + d.tripStartTime;
           });
 
     tripStart.append("div")
@@ -196,7 +257,7 @@ var outputTrips = function(data) {
           .attr("class", "trip__end-time")
           .append("text")
           .text(function(d) {
-            return d.tripStop;
+            return d.tripStopDay + " " + d.tripStopDate + " " + d.tripStopTime;
           });
 
     tripEnd.append("div")
@@ -205,7 +266,7 @@ var outputTrips = function(data) {
           .text(function(d) {
             return d.stationToName;
           });
-}
+};
 
 //
 
@@ -233,10 +294,44 @@ var chartBars = function(dataset) {
    });
 };
 
+var startClock = function() {
+  // Set the date to the start of the data
+  var dataStartDate = new Date("Thu Jun 27 2013 12:11:00 GMT-0500 (CDT)");
+  // convert date to milliseconds
+  var currentDate_millisec = dataStartDate.getTime();
+  // How fast do you want the clock to run?
+  var offset = 60 * 1000;
+
+  function Timer() {
+    updateDate();
+    setInterval(function() {
+      updateDate();
+      outputDate(currentDate);
+    }, speed);
+  }
+
+  function updateDate() {
+    currentDate = new Date(currentDate_millisec);
+    currentDate_millisec += offset;
+
+    return dateArray = [currentDate, currentDate_millisec];
+  }
+
+  function outputDate(date) {
+    cleanedDate = cleanDates(date);
+    prettyDate = cleanedDate.day + " " + cleanedDate.date + " " + cleanedDate.hour;
+    document.getElementById("clock").innerHTML=prettyDate;
+  }
+
+  // start the timer
+  Timer();
+};
+
+
 // Call the function
 parseTrips();
 parseNeighborhoods();
-
+startClock();
 
 // Avoid `console` errors in browsers that lack a console.
 (function() {
@@ -260,5 +355,3 @@ parseNeighborhoods();
         }
     }
 }());
-
-// Place any jQuery/helper plugins in here.
