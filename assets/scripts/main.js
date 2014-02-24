@@ -220,10 +220,12 @@ var outputTrips = function(data) {
         "background-position": "100%"
       })
       .transition()
-      .duration(function(d){ return d.tripDuration * 10 })
+      .duration(function(d){ return d.tripDuration * 10 }) // this makes 316 ms into 3160 ms speed up by factor of 10
       .delay(function(d) {
         dataStart = new Date("6/27/2013 12:11").getTime();
-        delay = d.tripStartRaw.getTime() - dataStart;
+        delay = d.tripStartRaw.getTime() - dataStart; // delay in milliseconds
+
+        console.log(delay);
 
         return delay / 1000;
 
@@ -234,9 +236,6 @@ var outputTrips = function(data) {
         .style({"opacity": "0"})
         .remove();
       })
-
-
-
 
     tripStart.append("div")
           .attr("class", "trip__start-time")
